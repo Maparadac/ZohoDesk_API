@@ -3,16 +3,21 @@ require('./shared/constants');
 var createError = require('http-errors'),
   express = require('express'),
   cookieParser = require('cookie-parser'),
-  env = require('node-env-file'), // .env file
+  env = require('node-env-file'),
+  bodyParser = require('body-parser'), // .env file
   app = express();
 
 env(__dirname + '/.env');
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+// Parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }))
+// Parse application/json
+app.use(bodyParser.json())
+
 app.use(cookieParser());
 
-app.use('/crm', require('./routes/records'));
+// Routes
+app.use('/crm', require('./routes/crm/records'));
 
 // Catch 404 and forward to error handler
 app.use(function (request, response, next) {
