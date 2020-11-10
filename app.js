@@ -5,9 +5,11 @@ var createError = require('http-errors'),
   cookieParser = require('cookie-parser'),
   env = require('node-env-file'),
   bodyParser = require('body-parser'), // .env file
-  app = express();
+  app = express(),
+  cors = require('cors');
 
 env(__dirname + '/.env');
+app.use(cors())
 
 // Parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))
