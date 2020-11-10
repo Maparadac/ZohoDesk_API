@@ -1,9 +1,10 @@
 var middlewares = {},
     axiosSingleton = require('./axiosSingleton')(),
-    debug = require('debug')('econtainers-zoho:records');
+    debug = require('debug')('econtainers-zoho:records'),
+    ZOHO_API_ACCOUNTS_OAUTH_TOKEN_RESOURCE = process.env.ZOHO_API_ACCOUNTS_OAUTH_TOKEN_RESOURCE;
 
 middlewares.accessTokenMiddleware = function (request, response, next) {
-    axiosSingleton.post(`https://accounts.zoho.com/oauth/v2/token?refresh_token=${process.env.REFRESH_TOKEN}&client_id=${process.env.CLIENT_ID}&client_secret=${process.env.CLIENT_SECRET}&grant_type=${process.env.GRANT_TYPE}`)
+    axiosSingleton.post(`${ZOHO_API_ACCOUNTS_OAUTH_TOKEN_RESOURCE}?refresh_token=${process.env.REFRESH_TOKEN}&client_id=${process.env.CLIENT_ID}&client_secret=${process.env.CLIENT_SECRET}&grant_type=${process.env.GRANT_TYPE}`)
         .then(function (responseAccessToken) {
             debug('accessTokenMiddleware', 'responseAccessToken', responseAccessToken.data);
             axiosSingleton.defaults.headers.common['Authorization'] = `Zoho-oauthtoken ${responseAccessToken.data.access_token}`;
