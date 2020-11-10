@@ -1,0 +1,5 @@
+global.modules = {
+    supported: [
+        'Leads'
+    ]
+}

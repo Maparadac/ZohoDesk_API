@@ -1,33 +1,35 @@
-var createError = require('http-errors');
-var express = require('express');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+require('./shared/constants');
 
-var recordsRouter = require('./routes/records');
+var createError = require('http-errors'),
+  express = require('express'),
+  cookieParser = require('cookie-parser'),
+  logger = require('morgan'),
+  env = require('node-env-file'), // .env file
+  app = express();
 
-var app = express();
+env(__dirname + '/.env');
 
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-app.use('/', recordsRouter);
+app.use('/', require('./routes/records'));
 
-// catch 404 and forward to error handler
-app.use(function(request, response, next) {
+// Catch 404 and forward to error handler
+app.use(function (request, response, next) {
   next(createError(404));
 });
 
-// error handler
-app.use(function(error, request, response, next) {
-  // set locals, only providing error in development
+// Error handler
+app.use(function (error, request, response, next) {
+  // Set locals, only providing error in development
   response.locals.message = error.message;
   response.locals.error = request.app.get('env') === 'development' ? error : {};
 
-  // render the error page
+  // Render the error page
   response.status(error.status || 500);
-  response.render('error');
+  response.send(error);
 });
 
 module.exports = app;
