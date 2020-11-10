@@ -3,13 +3,11 @@ require('./shared/constants');
 var createError = require('http-errors'),
   express = require('express'),
   cookieParser = require('cookie-parser'),
-  logger = require('morgan'),
   env = require('node-env-file'), // .env file
   app = express();
 
 env(__dirname + '/.env');
 
-app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
