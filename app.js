@@ -1,4 +1,4 @@
-require('./shared/constants');
+require('./shared/globals');
 
 var createError = require('http-errors'),
   express = require('express'),
@@ -30,7 +30,7 @@ app.use(function (request, response, next) {
 app.use(function (error, request, response, next) {
   // Render the error page
   response.status(error.status || 500);
-  response.send(error);
+  response.json(error);
 });
 
 module.exports = app;

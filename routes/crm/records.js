@@ -10,7 +10,7 @@ router.param('module_api_name', function (request, response, next, module_api_na
   debug('param', 'module_api_name', module_api_name);
 
   if (!module_api_name
-    || global.modules.supported.includes(module_api_name))
+    || global.MODULES.SUPPORTED.includes(module_api_name))
     return next();
 
   next(createError(404));
