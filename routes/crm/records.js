@@ -76,6 +76,9 @@ router.get('/:module_api_name/search',
 router.get('/:module_api_name/:record_id',
   middlewares.accessTokenMiddleware,
   function (request, response, next) {
+    debug('get', request.params.module_api_name, request.params.record_id);
+
+
     axiosSingleton.get(`${ZOHO_API_CRM_RESOURCE}/${request.params.module_api_name}/${request.params.record_id}`)
       .then(function (recordsResponse) {
         debug('get', 'record_id', recordsResponse.data);
