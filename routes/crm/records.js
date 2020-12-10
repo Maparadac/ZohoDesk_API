@@ -107,7 +107,7 @@ router.get('/:module_api_name/search/:related_record',
 
         }
 
-        return related(request.params.module_api_name, '', request.params.related_record);
+        return related(module_api_name, '', related_record);
       }).then(function (relatedResponse) {
         debug('get', 'search', '/:module_api_name/search/:related_record', 'relatedResponse', relatedResponse.data);
 
