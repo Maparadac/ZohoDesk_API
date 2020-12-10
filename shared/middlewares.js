@@ -1,6 +1,6 @@
-var middlewares = {},
+let middlewares = {},
     axiosSingleton = require('./axiosSingleton')(),
-    debug = require('debug')('econtainers-zoho:records'),
+    debug = require('debug')('econtainers-zoho-api:records'),
     ZOHO_API_ACCOUNTS_OAUTH_TOKEN_RESOURCE = process.env.ZOHO_API_ACCOUNTS_OAUTH_TOKEN_RESOURCE;
 
 middlewares.accessTokenMiddleware = function (request, response, next) {
