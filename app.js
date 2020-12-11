@@ -8,7 +8,10 @@ var createError = require('http-errors'),
   app = express(),
   cors = require('cors');
 
-env(__dirname + '/.env');
+// Development environment
+if (!process.env.NODE_ENV)
+  env(__dirname + '/.env');  
+
 app.use(cors())
 
 // Parse application/x-www-form-urlencoded
