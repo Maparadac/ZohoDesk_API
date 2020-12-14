@@ -87,37 +87,37 @@ router.get('/:module_api_name/search',
  * Response
  * https://www.zoho.com/crm/developer/docs/api/v2/search-records.html
  */
-router.get('/:module_api_name/search/:related_record',
-  middlewares.accessTokenMiddleware,
-  function (request, response, next) {
-    const { module_api_name, related_record } = request.params;
-    debug('get', '/:module_api_name/search/:related_record', module_api_name, related_record, 'request.query', request.query);
+// router.get('/:module_api_name/search/:related_record',
+//   middlewares.accessTokenMiddleware,
+//   function (request, response, next) {
+//     const { module_api_name, related_record } = request.params;
+//     debug('get', '/:module_api_name/search/:related_record', module_api_name, related_record, 'request.query', request.query);
 
-    let queryRequest = request.query,
-      queryString = Object.keys(queryRequest).reduce(function (store, value) { return store += `${value}=${queryRequest[value]}` }, '');
-    debug('get', '/:module_api_name/search/:related_record', module_api_name, related_record, 'queryString', queryString);
+//     let queryRequest = request.query,
+//       queryString = Object.keys(queryRequest).reduce(function (store, value) { return store += `${value}=${queryRequest[value]}` }, '');
+//     debug('get', '/:module_api_name/search/:related_record', module_api_name, related_record, 'queryString', queryString);
 
-    search(module_api_name, queryString)
-      .then(function (recordsResponse) {
-        debug('get', '/:module_api_name/search/:related_record', 'recordsResponse', recordsResponse.data);
+//     search(module_api_name, queryString)
+//       .then(function (recordsResponse) {
+//         debug('get', '/:module_api_name/search/:related_record', 'recordsResponse', recordsResponse.data);
 
-        let recordsResponse = recordsResponse.data || null;
-        if (recordsResponse && Array.isArray(recordsResponse.data.data)) {
+//         let recordsResponse = recordsResponse.data || null;
+//         if (recordsResponse && Array.isArray(recordsResponse.data.data)) {
 
 
-        }
+//         }
 
-        return related(module_api_name, '', related_record);
-      }).then(function (relatedResponse) {
-        debug('get', 'search', '/:module_api_name/search/:related_record', 'relatedResponse', relatedResponse.data);
+//         return related(module_api_name, '', related_record);
+//       }).then(function (relatedResponse) {
+//         debug('get', 'search', '/:module_api_name/search/:related_record', 'relatedResponse', relatedResponse.data);
 
-        response.json(relatedResponse.data).end();
-      })
-      .catch(function (error) {
-        debug('get', '/:module_api_name/search/:related_record', 'error', error);
-        next(new Error(error));
-      });
-  })
+//         response.json(relatedResponse.data).end();
+//       })
+//       .catch(function (error) {
+//         debug('get', '/:module_api_name/search/:related_record', 'error', error);
+//         next(new Error(error));
+//       });
+//   })
 
 /**
  * Get Records API
