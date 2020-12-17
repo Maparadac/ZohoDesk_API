@@ -1,7 +1,8 @@
 global.MODULES = {
     SUPPORTED: [
         'Leads',
-        'Products'
+        'Products',
+        'Estimaciones'
     ],
     STATUS: {
         SUCCESS: 'success',
