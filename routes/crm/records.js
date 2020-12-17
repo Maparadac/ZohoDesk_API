@@ -9,11 +9,11 @@ let express = require('express'),
 router.param('module_api_name', function (request, response, next, module_api_name) {
   debug('param', 'module_api_name', module_api_name);
 
-  if (module_api_name || global.MODULES.SUPPORTED.includes(module_api_name)) {
-    next();
-  } else {
-    next(createError(404));
-  }
+  if (module_api_name
+    && global.MODULES.SUPPORTED.includes(module_api_name))
+    return next();
+
+  next(createError(404));
 })
 
 /**
@@ -26,9 +26,7 @@ router.param('module_api_name', function (request, response, next, module_api_na
 router.get('/:module_api_name',
   middlewares.accessTokenMiddleware,
   function (request, response, next) {
-    const {
-      module_api_name
-    } = request.params;
+    const { module_api_name } = request.params;
     debug('get', '/:module_api_name', module_api_name);
 
     axiosSingleton.get(`${ZOHO_API_CRM_RESOURCE}/${module_api_name}`)
@@ -63,15 +61,11 @@ function search(module_api_name, queryString) {
 router.get('/:module_api_name/search',
   middlewares.accessTokenMiddleware,
   function (request, response, next) {
-    const {
-      module_api_name
-    } = request.params;
+    const { module_api_name } = request.params;
     debug('get', '/:module_api_name/search', module_api_name, 'request.query', request.query);
 
     let queryRequest = request.query,
-      queryString = Object.keys(queryRequest).reduce(function (store, value) {
-        return store += `${value}=${queryRequest[value]}`
-      }, '')
+      queryString = Object.keys(queryRequest).reduce(function (store, value) { return store += `${value}=${queryRequest[value]}` }, '')
 
     debug('get', '/:module_api_name/search', module_api_name, 'queryString', queryString);
 
@@ -93,42 +87,37 @@ router.get('/:module_api_name/search',
  * Response
  * https://www.zoho.com/crm/developer/docs/api/v2/search-records.html
  */
-router.get('/:module_api_name/search/:related_record',
-  middlewares.accessTokenMiddleware,
-  function (request, response, next) {
-    const {
-      module_api_name,
-      related_record
-    } = request.params;
-    debug('get', '/:module_api_name/search/:related_record', module_api_name, related_record, 'request.query', request.query);
+// router.get('/:module_api_name/search/:related_record',
+//   middlewares.accessTokenMiddleware,
+//   function (request, response, next) {
+//     const { module_api_name, related_record } = request.params;
+//     debug('get', '/:module_api_name/search/:related_record', module_api_name, related_record, 'request.query', request.query);
 
-    let queryRequest = request.query,
-      queryString = Object.keys(queryRequest).reduce(function (store, value) {
-        return store += `${value}=${queryRequest[value]}`
-      }, '');
-    debug('get', '/:module_api_name/search/:related_record', module_api_name, related_record, 'queryString', queryString);
+//     let queryRequest = request.query,
+//       queryString = Object.keys(queryRequest).reduce(function (store, value) { return store += `${value}=${queryRequest[value]}` }, '');
+//     debug('get', '/:module_api_name/search/:related_record', module_api_name, related_record, 'queryString', queryString);
 
-    search(module_api_name, queryString)
-      .then(function (recordsResponse) {
-        debug('get', '/:module_api_name/search/:related_record', 'recordsResponse', recordsResponse.data);
+//     search(module_api_name, queryString)
+//       .then(function (recordsResponse) {
+//         debug('get', '/:module_api_name/search/:related_record', 'recordsResponse', recordsResponse.data);
 
-        let recordsResponseData = recordsResponse.data || null;
-        if (recordsResponseData && Array.isArray(recordsResponseData.data.data)) {
+//         let recordsResponse = recordsResponse.data || null;
+//         if (recordsResponse && Array.isArray(recordsResponse.data.data)) {
 
 
-        }
+//         }
 
-        return related(module_api_name, '', related_record);
-      }).then(function (relatedResponse) {
-        debug('get', 'search', '/:module_api_name/search/:related_record', 'relatedResponse', relatedResponse.data);
+//         return related(module_api_name, '', related_record);
+//       }).then(function (relatedResponse) {
+//         debug('get', 'search', '/:module_api_name/search/:related_record', 'relatedResponse', relatedResponse.data);
 
-        response.json(relatedResponse.data).end();
-      })
-      .catch(function (error) {
-        debug('get', '/:module_api_name/search/:related_record', 'error', error);
-        next(new Error(error));
-      });
-  })
+//         response.json(relatedResponse.data).end();
+//       })
+//       .catch(function (error) {
+//         debug('get', '/:module_api_name/search/:related_record', 'error', error);
+//         next(new Error(error));
+//       });
+//   })
 
 /**
  * Get Records API
@@ -140,10 +129,7 @@ router.get('/:module_api_name/search/:related_record',
 router.get('/:module_api_name/:record_id',
   middlewares.accessTokenMiddleware,
   function (request, response, next) {
-    const {
-      module_api_name,
-      record_id
-    } = request.params;
+    const { module_api_name, record_id } = request.params;
     debug('get', '/:module_api_name/:record_id', module_api_name, record_id);
 
     axiosSingleton.get(`${ZOHO_API_CRM_RESOURCE}/${module_api_name}/${record_id}`)
@@ -178,11 +164,7 @@ function related(module_api_name, record_id, related_record) {
 router.get('/:module_api_name/:record_id/:related_record',
   middlewares.accessTokenMiddleware,
   function (request, response, next) {
-    const {
-      module_api_name,
-      record_id,
-      related_record
-    } = request.params;
+    const { module_api_name, record_id, related_record } = request.params;
     debug('get', '/:module_api_name/:record_id/:related_record', module_api_name, record_id, related_record);
 
     related(module_api_name, record_id, related_record)
