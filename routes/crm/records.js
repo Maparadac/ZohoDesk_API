@@ -26,7 +26,9 @@ let express = require('express'),
 router.get('/:module_api_name',
   middlewares.accessTokenMiddleware,
   function (request, response, next) {
-    const { module_api_name } = request.params;
+    const {
+      module_api_name
+    } = request.params;
     debug('get', '/:module_api_name', module_api_name);
 
     axiosSingleton.get(`${ZOHO_API_CRM_RESOURCE}/${module_api_name}`)
@@ -61,11 +63,15 @@ function search(module_api_name, queryString) {
 router.get('/:module_api_name/search',
   middlewares.accessTokenMiddleware,
   function (request, response, next) {
-    const { module_api_name } = request.params;
+    const {
+      module_api_name
+    } = request.params;
     debug('get', '/:module_api_name/search', module_api_name, 'request.query', request.query);
 
     let queryRequest = request.query,
-      queryString = Object.keys(queryRequest).reduce(function (store, value) { return store += `${value}=${queryRequest[value]}` }, '')
+      queryString = Object.keys(queryRequest).reduce(function (store, value) {
+        return store += `${value}=${queryRequest[value]}`
+      }, '')
 
     debug('get', '/:module_api_name/search', module_api_name, 'queryString', queryString);
 
@@ -90,11 +96,16 @@ router.get('/:module_api_name/search',
 router.get('/:module_api_name/search/:related_record',
   middlewares.accessTokenMiddleware,
   function (request, response, next) {
-    const { module_api_name, related_record } = request.params;
+    const {
+      module_api_name,
+      related_record
+    } = request.params;
     debug('get', '/:module_api_name/search/:related_record', module_api_name, related_record, 'request.query', request.query);
 
     let queryRequest = request.query,
-      queryString = Object.keys(queryRequest).reduce(function (store, value) { return store += `${value}=${queryRequest[value]}` }, '');
+      queryString = Object.keys(queryRequest).reduce(function (store, value) {
+        return store += `${value}=${queryRequest[value]}`
+      }, '');
     debug('get', '/:module_api_name/search/:related_record', module_api_name, related_record, 'queryString', queryString);
 
     search(module_api_name, queryString)
@@ -129,7 +140,10 @@ router.get('/:module_api_name/search/:related_record',
 router.get('/:module_api_name/:record_id',
   middlewares.accessTokenMiddleware,
   function (request, response, next) {
-    const { module_api_name, record_id } = request.params;
+    const {
+      module_api_name,
+      record_id
+    } = request.params;
     debug('get', '/:module_api_name/:record_id', module_api_name, record_id);
 
     axiosSingleton.get(`${ZOHO_API_CRM_RESOURCE}/${module_api_name}/${record_id}`)
