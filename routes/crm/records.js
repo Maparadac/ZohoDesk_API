@@ -4,9 +4,13 @@ let express = require('express'),
   middlewares = require('../../shared/middlewares'),
   axiosSingleton = require('../../shared/axiosSingleton')(),
   debug = require('debug')('econtainers-zoho-api:records'),
-  ZOHO_API_CRM_RESOURCE = process.env.ZOHO_API_CRM_RESOURCE;
+  ZOHO_API_CRM_RESOURCE = process.env.ZOHO_API_CRM_RESOURCE,
+  stream = require('stream');
 
-router.param('module_api_name', function (request, response, next, module_api_name) {
+const Fs = require('fs');
+const Path = require('path');
+
+router.param('module_api_name', (request, response, next, module_api_name) => {
   debug('param', 'module_api_name', module_api_name);
 
   if (module_api_name
@@ -14,7 +18,7 @@ router.param('module_api_name', function (request, response, next, module_api_na
     return next();
 
   next(createError(404));
-})
+});
 
 /**
  * Get Records Using External ID
@@ -25,17 +29,61 @@ router.param('module_api_name', function (request, response, next, module_api_na
  */
 router.get('/:module_api_name',
   middlewares.accessTokenMiddleware,
-  function (request, response, next) {
+  (request, response, next) => {
     const { module_api_name } = request.params;
     debug('get', '/:module_api_name', module_api_name);
 
     axiosSingleton.get(`${ZOHO_API_CRM_RESOURCE}/${module_api_name}`)
-      .then(function (recordsResponse) {
+      .then(recordsResponse => {
         debug('get', '/:module_api_name', recordsResponse.data);
         response.json(recordsResponse.data).end();
       })
-      .catch(function (error) {
+      .catch(error => {
         debug('get', '/:module_api_name', 'error', error);
+        next(new Error(error));
+      });
+  });
+
+
+async function downloadImage(imageURL, fileName) {
+  const path = Path.resolve(__dirname, '../', '../', 'public', `${fileName}.png`);
+  const writer = Fs.createWriteStream(path);
+
+  const response = await axiosSingleton.get(imageURL, {
+    responseType: 'stream'
+  });
+
+  response.data.pipe(writer);
+
+  return new Promise((resolve, reject) => {
+    writer.on('finish', resolve)
+    writer.on('error', reject)
+  });
+}
+
+/**
+ * Get Related Records Using External ID API
+ * https://www.zoho.com/crm/developer/docs/api/v2/get-related-records.html
+ * 
+ * Response
+ * https://www.zoho.com/crm/developer/docs/api/v2/leads-response.html
+ */
+router.get('/:module_api_name/:record_id/photo',
+  middlewares.accessTokenMiddleware,
+  async function (request, response, next) {
+    const { module_api_name, record_id } = request.params;
+    debug('get', '/:module_api_name/:record_id/photo', module_api_name, record_id);
+
+    axiosSingleton.get(`${ZOHO_API_CRM_RESOURCE}/${module_api_name}/${record_id}/photo`, {
+      responseType: 'arraybuffer'
+    })
+      .then(function (recordsResponse) {
+        debug('get', '/:module_api_name/:record_id/photo', true);
+        response.set('Content-Type', 'image/png');
+        response.send(recordsResponse.data).end();
+      })
+      .catch(function (error) {
+        debug('get', '/:module_api_name/:record_id/photo', 'error', error);
         next(new Error(error));
       });
   });
@@ -60,7 +108,7 @@ function search(module_api_name, queryString) {
  */
 router.get('/:module_api_name/search',
   middlewares.accessTokenMiddleware,
-  function (request, response, next) {
+  (request, response, next) => {
     const { module_api_name } = request.params;
     debug('get', '/:module_api_name/search', module_api_name, 'request.query', request.query);
 
@@ -70,36 +118,12 @@ router.get('/:module_api_name/search',
     debug('get', '/:module_api_name/search', module_api_name, 'queryString', queryString);
 
     search(request.params.module_api_name, queryString)
-      .then(function (recordsResponse) {
+      .then(recordsResponse => {
         debug('get', '/:module_api_name/search', 'recordsResponse', recordsResponse.data);
         response.json(recordsResponse.data).end();
       })
-      .catch(function (error) {
+      .catch(error => {
         debug('get', '/:module_api_name/search', 'error', error);
-        next(new Error(error));
-      });
-  })
-
-/**
- * Get Records API
- * https://www.zoho.com/crm/developer/docs/api/v2/get-records.html
- * 
- * Response
- * https://www.zoho.com/crm/developer/docs/api/v2/leads-response.html
- */
-router.get('/:module_api_name/:record_id',
-  middlewares.accessTokenMiddleware,
-  function (request, response, next) {
-    const { module_api_name, record_id } = request.params;
-    debug('get', '/:module_api_name/:record_id', module_api_name, record_id);
-
-    axiosSingleton.get(`${ZOHO_API_CRM_RESOURCE}/${module_api_name}/${record_id}`)
-      .then(function (recordsResponse) {
-        debug('get', '/:module_api_name/:record_id', recordsResponse.data);
-        response.json(recordsResponse.data).end();
-      })
-      .catch(function (error) {
-        debug('get', '/:module_api_name/:record_id', 'error', error);
         next(new Error(error));
       });
   });
@@ -124,16 +148,16 @@ function related(module_api_name, record_id, related_record) {
  */
 router.get('/:module_api_name/:record_id/:related_record',
   middlewares.accessTokenMiddleware,
-  function (request, response, next) {
+  (request, response, next) => {
     const { module_api_name, record_id, related_record } = request.params;
     debug('get', '/:module_api_name/:record_id/:related_record', module_api_name, record_id, related_record);
 
     related(module_api_name, record_id, related_record)
-      .then(function (recordsResponse) {
+      .then(recordsResponse => {
         debug('get', '/:module_api_name/:record_id/:related_record', recordsResponse.data);
         response.json(recordsResponse.data).end();
       })
-      .catch(function (error) {
+      .catch(error => {
         debug('get', '/:module_api_name/:record_id/:related_record', 'error', error);
         next(new Error(error));
       });
@@ -148,15 +172,15 @@ router.get('/:module_api_name/:record_id/:related_record',
  */
 router.post('/:module_api_name',
   middlewares.accessTokenMiddleware,
-  function (request, response, next) {
+  (request, response, next) => {
     let body = request.body;
     debug('post', '/:module_api_name', 'request.body', body);
     axiosSingleton.post(`${ZOHO_API_CRM_RESOURCE}/${request.params.module_api_name}`, body)
-      .then(function (recordResponse) {
+      .then(recordResponse => {
         debug('post', '/:module_api_name', 'recordResponse', recordResponse.data);
         response.json(recordResponse.data).end();
       })
-      .catch(function (error) {
+      .catch(error => {
         debug('post', '/:module_api_name', 'error', error);
         next(new Error(error));
       });

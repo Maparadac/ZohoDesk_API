@@ -27,6 +27,7 @@ app.use(cookieParser());
 // Static files
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Static favicon
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')))
 
 // Template engine configuration
@@ -38,12 +39,10 @@ app.use('/', require('./routes/index'));
 app.use('/crm', require('./routes/crm/records'));
 
 // Catch 404 and forward to error handler
-app.use(function (request, response, next) {
-  next(createError(404));
-});
+app.use((request, response, next) => next(createError(404)));
 
 // Error handler
-app.use(function (error, request, response, next) {
+app.use((error, request, response, next) => {
   // Render the error page
   response.status(error.status || 500);
   response.render('error', { error, message: error.message });
