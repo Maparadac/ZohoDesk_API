@@ -44,23 +44,6 @@ router.get('/:module_api_name',
       });
   });
 
-
-async function downloadImage(imageURL, fileName) {
-  const path = Path.resolve(__dirname, '../', '../', 'public', `${fileName}.png`);
-  const writer = Fs.createWriteStream(path);
-
-  const response = await axiosSingleton.get(imageURL, {
-    responseType: 'stream'
-  });
-
-  response.data.pipe(writer);
-
-  return new Promise((resolve, reject) => {
-    writer.on('finish', resolve)
-    writer.on('error', reject)
-  });
-}
-
 /**
  * Get Related Records Using External ID API
  * https://www.zoho.com/crm/developer/docs/api/v2/get-related-records.html
