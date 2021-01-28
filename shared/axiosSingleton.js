@@ -1,7 +1,7 @@
-var axios = require('axios'),
+let axios = require('axios'),
     axiosSingleton;
 
-module.exports = function () {
+module.exports = () => {
     if (!axiosSingleton)
         axiosSingleton = axios.create();
 

@@ -1,0 +1,23 @@
+# Quick Start Guide for Node.js in Standard Environment
+# https://cloud.google.com/appengine/docs/standard/nodejs/quickstart
+#
+# Configure your application with app.yaml
+# https://cloud.google.com/appengine/docs/flexible/nodejs/configuring-your-app-with-app-yaml
+#
+# app.yaml Configuration File
+# https://cloud.google.com/appengine/docs/flexible/nodejs/reference/app-yaml
+runtime: nodejs
+env: flex
+manual_scaling:
+  instances: 1
+resources:
+  cpu: 1
+  memory_gb: 0.5
+  disk_size_gb: 10
+env_variables:
+  ZOHO_API_ACCOUNTS_OAUTH_TOKEN_RESOURCE: "https://accounts.zoho.com/oauth/v2/token"
+  ZOHO_API_CRM_RESOURCE: "https://www.zohoapis.com/crm/v2"
+  REFRESH_TOKEN: "1000.2d1bd8f1b3bf60dfa21786c02b5beff3.c259e366a79b74fadcda0577da2d081f"
+  CLIENT_ID: "1000.U6OSWPJCQI8DETIAE63MD8ARYG7LNH"
+  CLIENT_SECRET: "07bf731214b27dd07604231e6cef1b35d35221aa53"
+  GRANT_TYPE: "refresh_token"

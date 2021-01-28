@@ -1,29 +1,17 @@
-# README #
+# App Engine #
 
-This README would normally document whatever steps are necessary to get your application up and running.
+Compila aplicaciones altamente escalables en una plataforma completamente administrada y sin servidores.
 
-### What is this repository for? ###
+[App Engine](https://cloud.google.com/appengine)
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+## Descripción general de App Engine ##
 
-### How do I get set up? ###
+Una aplicación de App Engine está compuesta por un único recurso de aplicación que consta de uno o más servicios. Cada servicio se puede configurar para utilizar entornos de ejecución diferentes y operar con una configuración de rendimiento distinta. Dentro de cada servicio se implementan sus versiones. Luego, cada versión se ejecuta en una o más instancias, según la cantidad de tráfico que configuraste para que maneje.
 
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
+[Descripción general de App Engine](https://cloud.google.com/appengine/docs/flexible/nodejs/an-overview-of-app-engine)
 
-### Contribution guidelines ###
+## El entorno de ejecución de Node.js ##
 
-* Writing tests
-* Code review
-* Other guidelines
+El entorno de ejecución de Node.js es la pila de software encargada de instalar el código de la aplicación y sus dependencias, y de ejecutar la aplicación.
 
-### Who do I talk to? ###
-
-* Repo owner or admin
-* Other community or team contact
+[El entorno de ejecución de Node.js](https://cloud.google.com/appengine/docs/flexible/nodejs/runtime)
