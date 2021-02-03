@@ -4,8 +4,7 @@ let express = require('express'),
   middlewares = require('../../shared/middlewares'),
   axiosSingleton = require('../../shared/axiosSingleton')(),
   debug = require('debug')('econtainers-zoho-api:records'),
-  ZOHO_API_CRM_RESOURCE = process.env.ZOHO_API_CRM_RESOURCE,
-  stream = require('stream');
+  ZOHO_API_CRM_RESOURCE = process.env.ZOHO_API_CRM_RESOURCE;
 
 const Fs = require('fs');
 const Path = require('path');
@@ -19,30 +18,6 @@ router.param('module_api_name', (request, response, next, module_api_name) => {
 
   next(createError(404));
 });
-
-/**
- * Get Records Using External ID
- * https://www.zoho.com/crm/developer/docs/api/v2/get-records-ext.html
- * 
- * Response
- * https://www.zoho.com/crm/developer/docs/api/v2/leads-response.html
- */
-router.get('/:module_api_name',
-  middlewares.accessTokenMiddleware,
-  (request, response, next) => {
-    const { module_api_name } = request.params;
-    debug('get', '/:module_api_name', module_api_name);
-
-    axiosSingleton.get(`${ZOHO_API_CRM_RESOURCE}/${module_api_name}`)
-      .then(recordsResponse => {
-        debug('get', '/:module_api_name', recordsResponse.data);
-        response.json(recordsResponse.data).end();
-      })
-      .catch(error => {
-        debug('get', '/:module_api_name', 'error', error);
-        next(new Error(error));
-      });
-  });
 
 /**
  * Get Related Records Using External ID API
@@ -70,6 +45,33 @@ router.get('/:module_api_name/:record_id/photo',
         next(new Error(error));
       });
   });
+
+  /**
+ * Get Related Records Attachments
+ * https://www.zoho.com/crm/developer/docs/api/v2/get-attachments.html
+ * 
+ * Response
+ * https://www.zoho.com/crm/developer/docs/api/v2/get-attachments.html
+ */
+router.get('/:module_api_name/:record_id/Attachments/:id_attachments',
+middlewares.accessTokenMiddleware,
+async function (request, response, next) {
+  const { module_api_name, record_id, id_attachments } = request.params;
+  debug('get', '/:module_api_name/:record_id/Attachments/:id_attachments', module_api_name, record_id);
+
+  axiosSingleton.get(`${ZOHO_API_CRM_RESOURCE}/${module_api_name}/${record_id}/Attachments/${id_attachments}`, {
+    responseType: 'arraybuffer'
+  })
+    .then(function (recordsResponse) {
+      debug('get', '/:module_api_name/:record_id/Attachments/:id_attachments', true);
+      response.set('Content-Type', 'image/png');
+      response.send(recordsResponse.data).end();
+    })
+    .catch(function (error) {
+      debug('get', '/:module_api_name/:record_id/Attachments/:id_attachments', 'error', error);
+      next(new Error(error));
+    });
+});
 
 /**
  * Refactoring Search Records API
@@ -142,6 +144,47 @@ router.get('/:module_api_name/:record_id/:related_record',
       })
       .catch(error => {
         debug('get', '/:module_api_name/:record_id/:related_record', 'error', error);
+        next(new Error(error));
+      });
+  });
+
+router.get('/:module_api_name/:record_id',
+  middlewares.accessTokenMiddleware,
+  function (request, response, next) {
+    const { module_api_name, record_id } = request.params;
+    debug('get', '/:module_api_name/:record_id', module_api_name, record_id);
+
+    axiosSingleton.get(`${ZOHO_API_CRM_RESOURCE}/${module_api_name}/${record_id}`)
+      .then(function (recordsResponse) {
+        debug('get', '/:module_api_name/:record_id', recordsResponse.data);
+        response.json(recordsResponse.data).end();
+      })
+      .catch(function (error) {
+        debug('get', '/:module_api_name/:record_id', 'error', error);
+        next(new Error(error));
+      });
+  });
+
+/**
+ * Get Records Using External ID
+ * https://www.zoho.com/crm/developer/docs/api/v2/get-records-ext.html
+ * 
+ * Response
+ * https://www.zoho.com/crm/developer/docs/api/v2/leads-response.html
+ */
+router.get('/:module_api_name',
+  middlewares.accessTokenMiddleware,
+  (request, response, next) => {
+    const { module_api_name } = request.params;
+    debug('get', '/:module_api_name', module_api_name);
+
+    axiosSingleton.get(`${ZOHO_API_CRM_RESOURCE}/${module_api_name}`)
+      .then(recordsResponse => {
+        debug('get', '/:module_api_name', recordsResponse.data);
+        response.json(recordsResponse.data).end();
+      })
+      .catch(error => {
+        debug('get', '/:module_api_name', 'error', error);
         next(new Error(error));
       });
   });
