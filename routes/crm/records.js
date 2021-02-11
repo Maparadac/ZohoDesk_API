@@ -57,8 +57,6 @@ router.get('/:module_api_name/:record_id/Attachments/:id_attachments',
 middlewares.accessTokenMiddleware,
 async function (request, response, next) {
   const { module_api_name, record_id, id_attachments } = request.params;
-  debug('get', '/:module_api_name/:record_id/Attachments/:id_attachments', module_api_name, record_id);
-
   axiosSingleton.get(`${ZOHO_API_CRM_RESOURCE}/${module_api_name}/${record_id}/Attachments/${id_attachments}`, {
     responseType: 'arraybuffer'
   })
