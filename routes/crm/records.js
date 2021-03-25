@@ -201,4 +201,29 @@ router.post('/:module_api_name',
       });
   });
 
+router.post('/:module_api_name/payu',
+  middlewares.accessTokenMiddleware,
+  function (request, response, next) {
+    let body = {
+      data: [{
+        id: request.body.reference_sale,
+        Referencia_de_pago: request.body.reference_pol,
+        Estado_pago: request.body.response_message_pol
+      }],
+      trigger: ["approval"]
+    };
+    debug('post', '/:module_api_name/payu', 'request.body', body);
+
+    axiosSingleton.put(`${ZOHO_API_CRM_RESOURCE}/${request.params.module_api_name}`, body)
+      .then(function (recordResponse) {
+        debug('post', '/:module_api_name', 'recordResponse', recordResponse.data);
+        response.json(recordResponse.data).end();
+      })
+      .catch(function (error) {
+        debug('post', '/:module_api_name', 'error', error);
+        next(new Error(error));
+      });
+  })
+
+
 module.exports = router;
