@@ -213,11 +213,16 @@ router.post('/:module_api_name',
 router.post('/:module_api_name/payu',
   middlewares.accessTokenMiddleware,
   function (request, response, next) {
+    let states = {
+      "APPROVED": "Aprobado",
+      "PENDING": "Pendiente de pago",
+      "DECLINED": "Rechazado"
+    }
     let body = {
       data: [{
         id: request.body.reference_sale,
         Referencia_de_pago: request.body.reference_pol,
-        Estado_pago: request.body.response_message_pol
+        Estado_de_Pago: states[request.body.response_message_pol]
       }],
       trigger: ["approval"]
     };

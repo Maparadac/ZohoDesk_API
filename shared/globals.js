@@ -3,7 +3,8 @@ global.MODULES = {
         'Leads',
         'Products',
         'users',
-        'Estimaciones'
+        'Estimaciones',
+        'Cotizaci_nes_EFF'
     ],
     STATUS: {
         SUCCESS: 'success',
