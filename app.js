@@ -37,6 +37,7 @@ app.set('view engine', 'pug');
 // Routes
 app.use('/', require('./routes/index'));
 app.use('/crm', require('./routes/crm/records'));
+app.use('/desk', require('./routes/desk/records'));
 
 // Catch 404 and forward to error handler
 app.use((request, response, next) => next(createError(404)));
