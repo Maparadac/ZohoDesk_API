@@ -5,6 +5,7 @@ var createError = require('http-errors'),
   cookieParser = require('cookie-parser'),
   env = require('node-env-file'),
   bodyParser = require('body-parser'), // .env file
+  morgan = require("morgan"),
   app = express(),
   cors = require('cors'),
   path = require('path'),
@@ -15,6 +16,9 @@ if (!process.env.NODE_ENV)
   env(__dirname + '/.env');
 
 app.use(cors())
+
+// Check on dev console
+app.use(morgan("dev"))
 
 // Parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -36,7 +40,6 @@ app.set('view engine', 'pug');
 
 // Routes
 app.use('/', require('./routes/index'));
-app.use('/crm', require('./routes/crm/records'));
 app.use('/desk', require('./routes/desk/records'));
 
 // Catch 404 and forward to error handler

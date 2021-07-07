@@ -1,8 +1,3 @@
-const {
-    default: axios
-} = require('axios');
-
-
 let express = require('express'),
     router = express.Router(),
     createError = require('http-errors'),
@@ -50,9 +45,10 @@ router.post('/:module_api_name',
             })
             .catch(error => {
                 debug('post', '/:module_api_name', 'error', error);
-                next(new Error(error));
+                response.status(error.response.status).end()
+                /*                 next(new Error(error)); */
             });
     });
 
 
-module.exports = router
+module.exports = router;
